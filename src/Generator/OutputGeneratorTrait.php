@@ -59,15 +59,7 @@ trait OutputGeneratorTrait
             }
 
             $returnType = "\\" . $class;
-            $returnStmt = new Stmt\Return_(new Expr\MethodCall(
-                new Expr\PropertyFetch(new Expr\Variable('this'), 'serializer'),
-                'deserialize',
-                [
-                    new Arg(new Expr\Cast\String_(new Expr\MethodCall(new Expr\Variable('response'), 'getBody'))),
-                    new Arg(new Scalar\String_($class)),
-                    new Arg(new Scalar\String_('json'))
-                ]
-            ));
+            $returnStmt = new Stmt\Return_(new Expr\Cast\String_(new Expr\MethodCall(new Expr\Variable('response'), 'getBody')));
         }
 
         if ($status === 'default') {

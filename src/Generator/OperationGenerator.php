@@ -93,7 +93,7 @@ class OperationGenerator
 
         // Output
         $outputStatements = [];
-        $outputTypes = ["\\Psr\\Http\\Message\\ResponseInterface"];
+        $outputTypes = ["\\Psr\\Http\\Message\\ResponseInterface", 'string'];
 
         if ($operation->getOperation()->getResponses()) {
             foreach ($operation->getOperation()->getResponses() as $status => $response) {
@@ -109,10 +109,6 @@ class OperationGenerator
                 );
 
                 if (null !== $outputType) {
-                    if (!in_array($outputType, $outputTypes)) {
-                        $outputTypes[] = $outputType;
-                    }
-
                     $outputStatements[] = $ifStatus;
                 }
             }

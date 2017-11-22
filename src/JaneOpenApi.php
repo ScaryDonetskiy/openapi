@@ -8,9 +8,6 @@ use Fitbug\SymfonySerializer\YamlEncoderDecoder\YamlEncoder;
 use Joli\Jane\Encoder\RawEncoder;
 use Joli\Jane\Generator\Context\Context;
 use Joli\Jane\Generator\File;
-use Joli\Jane\Generator\ModelGenerator;
-use Joli\Jane\Generator\Naming;
-use Joli\Jane\Generator\NormalizerGenerator;
 use Joli\Jane\Guesser\ChainGuesser;
 use Joli\Jane\OpenApi\Generator\ClientGenerator;
 use Joli\Jane\OpenApi\Generator\GeneratorFactory;
@@ -55,16 +52,6 @@ class JaneOpenApi
     private $prettyPrinter;
 
     /**
-     * @var ModelGenerator
-     */
-    private $modelGenerator;
-
-    /**
-     * @var NormalizerGenerator
-     */
-    private $normalizerGenerator;
-
-    /**
      * @var ChainGuesser
      */
     private $chainGuesser;
@@ -79,8 +66,6 @@ class JaneOpenApi
      *
      * @param SchemaParser          $schemaParser
      * @param ChainGuesser          $chainGuesser
-     * @param ModelGenerator        $modelGenerator
-     * @param NormalizerGenerator   $normalizerGenerator
      * @param ClientGenerator       $clientGenerator
      * @param PrettyPrinterAbstract $prettyPrinter
      * @param ConfigInterface|null  $fixerConfig
@@ -88,8 +73,6 @@ class JaneOpenApi
     public function __construct(
         SchemaParser $schemaParser,
         ChainGuesser $chainGuesser,
-        ModelGenerator $modelGenerator,
-        NormalizerGenerator $normalizerGenerator,
         ClientGenerator $clientGenerator,
         PrettyPrinterAbstract $prettyPrinter,
         ConfigInterface $fixerConfig = null
@@ -97,8 +80,6 @@ class JaneOpenApi
         $this->schemaParser        = $schemaParser;
         $this->clientGenerator     = $clientGenerator;
         $this->prettyPrinter       = $prettyPrinter;
-        $this->modelGenerator      = $modelGenerator;
-        $this->normalizerGenerator = $normalizerGenerator;
         $this->chainGuesser        = $chainGuesser;
         $this->fixer               = $fixerConfig;
     }
@@ -154,8 +135,6 @@ class JaneOpenApi
         foreach ($registry->getSchemas() as $schema) {
             $context->setCurrentSchema($schema);
 
-            $files = array_merge($files, $this->modelGenerator->generate($schema, $schema->getRootName(), $context));
-            $files = array_merge($files, $this->normalizerGenerator->generate($schema, $schema->getRootName(), $context));
             $clients = $this->clientGenerator->generate($schema->getParsed(), $schema->getNamespace(), $context, $schema->getOrigin() . '#');
 
             foreach ($clients as $node) {
@@ -265,15 +244,10 @@ EOH
         $schemaParser    = new SchemaParser($serializer);
         $clientGenerator = GeneratorFactory::build($serializer);
         $prettyPrinter   = new StandardPrettyPrinter();
-        $naming          = new Naming();
-        $modelGenerator  = new ModelGenerator($naming);
-        $normGenerator   = new NormalizerGenerator($naming, isset($options['reference']) ? $options['reference'] : false);
 
         return new self(
             $schemaParser,
             GuesserFactory::create($serializer, $options),
-            $modelGenerator,
-            $normGenerator,
             $clientGenerator,
             $prettyPrinter
         );
