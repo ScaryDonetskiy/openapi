@@ -123,7 +123,7 @@ trait InputGeneratorTrait
                     $parameter = $this->resolveParameter($parameter);
                 }
 
-                if ($parameter instanceof BodyParameter) {
+                if ($parameter instanceof BodyParameter) {;
                     $methodParameters[] = $this->bodyParameterGenerator->generateMethodParameter($parameter, $context, $operation->getReference() . '/parameters/' . $key);
                     $documentationParams[] = sprintf(' * @param %s', $this->bodyParameterGenerator->generateDocParameter($parameter, $context, $operation->getReference() . '/parameters/' . $key));
                 }

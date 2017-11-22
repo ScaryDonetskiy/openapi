@@ -45,7 +45,7 @@ class BodyParameterGenerator extends ParameterGenerator
             return new Node\Param($name);
         }
 
-        return new Node\Param($name, null, $class);
+        return new Node\Param($name, null);
     }
 
     /**
@@ -61,7 +61,7 @@ class BodyParameterGenerator extends ParameterGenerator
             return sprintf('%s $%s %s', 'mixed', Inflector::camelize($parameter->getName()), $parameter->getDescription() ?: '');
         }
 
-        return sprintf('%s $%s %s', $class, Inflector::camelize($parameter->getName()), $parameter->getDescription() ?: '');
+        return sprintf('%s $%s %s', 'array', Inflector::camelize($parameter->getName()), $parameter->getDescription() ?: '');
     }
 
     /**
